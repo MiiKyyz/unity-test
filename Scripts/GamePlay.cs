@@ -6,7 +6,7 @@ public class GamePlay : MonoBehaviour
 {
     // Start is called before the first frame update
 
-    [HideInInspector] public float FX, FY, Force , Degree;
+    [HideInInspector] public float FX, FZ, Force , Degree;
     public Transform Cam;
     CharacterController controller;
 
@@ -23,30 +23,40 @@ public class GamePlay : MonoBehaviour
     }
 
 
+    float turns = 0;
+
     private void PlayerMovement()
     {
 
-        Degree = Cam.localRotation.eulerAngles.y * (Mathf.PI / 180);
+        Degree = (Cam.localRotation.eulerAngles.y + turns) * (Mathf.PI / 180);
         
 
         if (Input.GetKey("w"))
         {
 
 
-            transform.localRotation = Quaternion.Euler(0, Cam.localRotation.eulerAngles.y, 0);
+            transform.localRotation = Quaternion.Euler(0, Cam.localRotation.eulerAngles.y + turns, 0);
 
 
 
 
 
             FX = Force * Mathf.Sin(Degree) * Time.deltaTime;
-            FY = Force * Mathf.Cos(Degree) * Time.deltaTime;
+            FZ = Force * Mathf.Cos(Degree) * Time.deltaTime;
 
 
-            controller.Move(new Vector3(FX, 0, FY));
+            controller.Move(new Vector3(FX, 0, FZ));
 
         }
         
     }
+
+     private void OnAnimatorMove()
+     {
+         Force = (playerAnimator.deltaPosition / Time.deltaTime).magnitude;
+    
+    
+    
+     }
 
 }
